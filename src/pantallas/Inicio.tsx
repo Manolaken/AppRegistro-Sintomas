@@ -2,6 +2,7 @@ import BarraPestanas from '../componentes/BarraPestanas.tsx'
 import { IconoCiclo, IconoComida, IconoMas, IconoMedicacion } from '../componentes/Iconos.tsx'
 import TarjetaApunte from '../componentes/TarjetaApunte.tsx'
 import TarjetaEpisodio from '../componentes/TarjetaEpisodio.tsx'
+import { DIAS_PARA_AVISAR, diasSinCopia } from '../copia.ts'
 import { nivelDolor } from '../datos.ts'
 import { claveDia } from '../fechas.ts'
 import type { Apunte, ClaseApunte, Episodio, Pestana } from '../tipos.ts'
@@ -58,6 +59,12 @@ export default function Inicio({
     .reverse()
 
   const total = episodios?.length ?? 0
+
+  // Aviso de copia de seguridad: solo si hay algo que perder y hace tiempo
+  // (o nunca) que no se guarda una copia.
+  const hayRegistros = total + (apuntes?.length ?? 0) > 0
+  const dias = diasSinCopia()
+  const avisarCopia = hayRegistros && (dias === null || dias >= DIAS_PARA_AVISAR)
   const recientes = (episodios ?? []).slice(0, MAXIMO_EN_INICIO)
 
   return (
@@ -93,6 +100,19 @@ export default function Inicio({
             Regla
           </button>
         </div>
+
+        {avisarCopia && (
+          <section className="tarjeta recordatorio">
+            <p className="texto">
+              {dias === null
+                ? 'Aún no has guardado ninguna copia de tus registros.'
+                : `Hace ${dias} días que no guardas una copia de tus registros.`}
+            </p>
+            <button type="button" className="boton-texto" onClick={() => alIr('ajustes')}>
+              Guardar una copia
+            </button>
+          </section>
+        )}
 
         <section className="tarjeta">
           <div className="tarjeta-cabecera">

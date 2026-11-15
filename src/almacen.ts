@@ -106,3 +106,31 @@ export async function listarApuntes(): Promise<Apunte[]> {
 export function borrarApunte(id: string): Promise<void> {
   return escribir(APUNTES, (tabla) => tabla.delete(id))
 }
+
+// --- Copia de seguridad ---
+
+// Añade de una vez los episodios y apuntes de una copia. Lo que ya existe
+// con el mismo id se sustituye; lo demás no se toca. Va todo en una sola
+// transacción: o entra todo, o no entra nada.
+export async function importarDatos(episodios: Episodio[], apuntes: Apunte[]): Promise<void> {
+  const base = await abrirBase()
+  return new Promise((resolver, rechazar) => {
+    const transaccion = base.transaction([EPISODIOS, APUNTES], 'readwrite')
+    const tablaEpisodios = transaccion.objectStore(EPISODIOS)
+    const tablaApuntes = transaccion.objectStore(APUNTES)
+    for (const episodio of episodios) tablaEpisodios.put(episodio)
+    for (const apunte of apuntes) tablaApuntes.put(apunte)
+    transaccion.oncomplete = () => {
+      base.close()
+      resolver()
+    }
+    transaccion.onerror = () => {
+      base.close()
+      rechazar(transaccion.error)
+    }
+    transaccion.onabort = () => {
+      base.close()
+      rechazar(transaccion.error)
+    }
+  })
+}

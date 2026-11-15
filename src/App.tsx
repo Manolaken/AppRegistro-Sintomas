@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Ajustes from './pantallas/Ajustes.tsx'
 import ApunteRapido from './pantallas/ApunteRapido.tsx'
 import DetalleEpisodio from './pantallas/DetalleEpisodio.tsx'
 import Historial from './pantallas/Historial.tsx'
@@ -79,6 +80,10 @@ function App() {
         }}
       />
     )
+  }
+
+  if (pantalla === 'ajustes') {
+    return <Ajustes alIr={ir} />
   }
 
   if (pantalla === 'historial') {

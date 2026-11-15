@@ -6,8 +6,8 @@ type Props = {
   alIr: (pestana: Pestana) => void
 }
 
-// Barra inferior con las secciones de la app. Informe y Ajustes todavía
-// no existen y por eso están desactivadas.
+// Barra inferior con las secciones de la app. Informe todavía no existe y
+// por eso está desactivada.
 export default function BarraPestanas({ activa, alIr }: Props) {
   return (
     <nav className="pestanas" aria-label="Secciones">
@@ -33,7 +33,12 @@ export default function BarraPestanas({ activa, alIr }: Props) {
         <IconoInforme />
         Informe
       </button>
-      <button type="button" className="pestana" disabled>
+      <button
+        type="button"
+        className={activa === 'ajustes' ? 'pestana pestana-activa' : 'pestana'}
+        aria-current={activa === 'ajustes' ? 'page' : undefined}
+        onClick={() => alIr('ajustes')}
+      >
         <IconoAjustes />
         Ajustes
       </button>

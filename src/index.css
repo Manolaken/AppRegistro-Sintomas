@@ -710,3 +710,53 @@ textarea.campo {
 .boton-texto-peligro {
   color: var(--alerta);
 }
+
+/* --- Ajustes y copia de seguridad --- */
+
+.texto {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.boton-lleno {
+  background: var(--acento);
+  color: var(--sobre-acento);
+}
+
+.boton-secundario:disabled {
+  color: var(--tinta-suave);
+  background: var(--papel);
+  border-style: dashed;
+}
+
+.confirmado {
+  padding: 12px 14px;
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--piel);
+  border: var(--borde);
+  border-radius: 12px;
+}
+
+/* Oculta un elemento a la vista sin quitarlo de la página (el selector de
+   archivos se abre desde un botón normal). */
+.oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.recordatorio {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-style: dashed;
+}
+
+.recordatorio .boton-texto {
+  flex-shrink: 0;
+}

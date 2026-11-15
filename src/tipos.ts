@@ -105,7 +105,26 @@ export type Apunte = {
   flujo: Flujo | null
 }
 
-export type Pantalla = 'inicio' | 'registrar' | 'historial' | 'detalle' | 'editar' | 'apunte'
+export type Pantalla =
+  | 'inicio'
+  | 'registrar'
+  | 'historial'
+  | 'detalle'
+  | 'editar'
+  | 'apunte'
+  | 'ajustes'
 
 // Las pestañas de la barra inferior que ya funcionan.
-export type Pestana = 'inicio' | 'historial'
+export type Pestana = 'inicio' | 'historial' | 'ajustes'
+
+// Una copia de seguridad: todo lo guardado, en un archivo JSON.
+// "formato" permite cambiar la estructura en el futuro y seguir leyendo
+// las copias antiguas.
+export type Copia = {
+  app: 'registro-sintomas'
+  formato: 1
+  // Cuándo se hizo, en hora local ("2026-11-15T14:20").
+  creada: string
+  episodios: Episodio[]
+  apuntes: Apunte[]
+}

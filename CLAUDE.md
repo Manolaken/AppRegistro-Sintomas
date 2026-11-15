@@ -52,6 +52,7 @@ src/
   almacen.ts                     Guardado local en IndexedDB (guardar, listar y borrar episodios y apuntes)
   useEpisodios.ts                Hook que lee los episodios guardados al entrar en una pantalla
   useApuntes.ts                  Lo mismo para los apuntes rápidos
+  copia.ts                       Copia de seguridad: crear, entregar, leer y recuperar el JSON
   componentes/
     Iconos.tsx                   Iconos SVG de trazo
     MapaAbdomen.tsx              Torso con 9 cuadros de 3 x 3 celdas; sin `alCambiar` es de solo lectura
@@ -63,6 +64,7 @@ src/
   pantallas/
     Inicio.tsx                   Pantalla principal: semana, apuntes de hoy y últimos dolores
     Historial.tsx                Dolores y apuntes mezclados por fecha, agrupados por mes
+    Ajustes.tsx                  Guardar y recuperar la copia de seguridad
     ApunteRapido.tsx             Crear, editar o borrar un apunte de comida, medicación o regla
     DetalleEpisodio.tsx          Ficha de un registro, con editar y borrar
     RegistrarDolor.tsx           Asistente de 4 pasos; crea un episodio o edita `episodioInicial`
@@ -107,18 +109,19 @@ Hecho:
 
 - App instalable y con funcionamiento sin conexión: manifiesto, iconos y service worker propio, sin librerías. El service worker solo se registra en la versión publicada, no con `npm run dev`.
 
-Las pestañas Informe y Ajustes están desactivadas.
+- Copia de seguridad en la pestaña Ajustes. Guardar entrega un JSON por el menú Compartir (o lo descarga donde no lo hay). Recuperar añade los registros del archivo sin borrar nada; los que tienen el mismo `id` se sustituyen. El inicio avisa si hay registros y nunca se ha hecho copia o han pasado 14 días (la fecha de la última se guarda en `localStorage`).
+
+La pestaña Informe está desactivada.
 
 ## Pendiente
 
 1. **Foto opcional** de la comida, en el apunte de comida y en el paso 3 del registro.
 2. **Aprovechar los apuntes en el registro de dolor:** proponer en el paso 3 las comidas ya apuntadas ese día para no escribirlas dos veces.
 3. **Informe PDF** para el médico con resumen y gráficas (previsto: jsPDF).
-4. **Copia de seguridad:** exportar e importar JSON, para cambiar de teléfono sin perder datos.
-5. **Bloqueo** con código y Face ID (WebAuthn).
-6. **Tipografía en local:** ahora viene de Google Fonts y sin conexión se ve con la letra del sistema.
+4. **Bloqueo** con código y Face ID (WebAuthn).
+5. **Tipografía en local:** ahora viene de Google Fonts y sin conexión se ve con la letra del sistema.
 
-Si cambia la forma de `Episodio` o de `Apunte`, hay que subir `VERSION` en `almacen.ts` y migrar los datos ya guardados; no se pueden perder registros. El informe y la copia de seguridad deben incluir los dos almacenes.
+Si cambia la forma de `Episodio` o de `Apunte`, hay que subir `VERSION` en `almacen.ts` y migrar los datos ya guardados; no se pueden perder registros. El informe debe incluir los dos almacenes. Si cambia la forma de la copia (`Copia` en `tipos.ts`), sube `formato` y haz que `leerCopia` siga aceptando las copias antiguas.
 
 ### Datos de cada episodio
 
