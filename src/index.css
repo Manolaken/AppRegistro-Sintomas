@@ -1,0 +1,712 @@
+/* Estilo "Pop": fondo amarillo, tarjetas blancas con borde negro y un
+   color de acento. Para probar otros colores basta con cambiar estas
+   variables. */
+:root {
+  --fondo: #ffd84d;
+  --tinta: #111111;
+  --tinta-suave: #444444;
+  --papel: #ffffff;
+  --acento: #2f5bff;
+  --sobre-acento: #ffffff;
+  --piel: #ffe98f;
+  /* Escala de dolor: leve, moderado y fuerte. */
+  --dolor-1: #bfd0ff;
+  --dolor-2: #6f8fff;
+  --dolor-3: #1b3bb8;
+  --alerta: #b3261e;
+  --borde: 2px solid var(--tinta);
+
+  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+  color: var(--tinta);
+  background: var(--fondo);
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--fondo);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--acento);
+  outline-offset: 2px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+
+h2,
+label {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+p {
+  margin: 0;
+}
+
+/* --- Estructura de una pantalla --- */
+
+.pantalla {
+  min-height: 100dvh;
+  max-width: 430px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.contenido {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: calc(env(safe-area-inset-top) + 20px) 22px calc(env(safe-area-inset-bottom) + 20px);
+}
+
+.fecha {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.fecha::first-letter {
+  text-transform: uppercase;
+}
+
+.subtitulo {
+  margin-top: 4px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.nota {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--tinta-suave);
+}
+
+.tarjeta {
+  background: var(--papel);
+  border: var(--borde);
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tarjeta-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vacio {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--tinta-suave);
+}
+
+/* --- Inicio --- */
+
+.boton-principal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  text-align: left;
+  background: var(--acento);
+  color: var(--sobre-acento);
+  border: var(--borde);
+  border-radius: 18px;
+  box-shadow: 4px 4px 0 var(--tinta);
+}
+
+.boton-principal:active,
+.boton-siguiente:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--tinta);
+}
+
+.boton-principal-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.boton-principal-texto strong {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.boton-principal-icono {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--papel);
+  color: var(--tinta);
+  border: var(--borde);
+  border-radius: 50%;
+}
+
+.acciones {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.accion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  font-size: 14px;
+  font-weight: 700;
+  background: var(--papel);
+  border: var(--borde);
+  border-radius: 14px;
+}
+
+.accion:disabled {
+  color: var(--tinta-suave);
+  border-style: dashed;
+}
+
+.semana {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tinta-suave);
+}
+
+.dia-hoy {
+  color: var(--tinta);
+  font-weight: 800;
+}
+
+.dia-marca {
+  width: 30px;
+  height: 30px;
+  background: var(--papel);
+  border: var(--borde);
+  border-radius: 8px;
+}
+
+.dia-hoy .dia-marca {
+  box-shadow: 2px 2px 0 var(--tinta);
+}
+
+.pestanas {
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  padding: 8px 12px calc(env(safe-area-inset-bottom) + 8px);
+  background: var(--papel);
+  border-top: var(--borde);
+}
+
+.pestana {
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tinta-suave);
+  background: none;
+  border: 0;
+}
+
+.pestana-activa {
+  color: var(--acento);
+  font-weight: 800;
+}
+
+/* --- Registrar dolor --- */
+
+.barra-superior {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.boton-redondo {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--papel);
+  border: var(--borde);
+  border-radius: 50%;
+}
+
+.paso {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.progreso {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.tramo {
+  height: 8px;
+  background: var(--papel);
+  border: var(--borde);
+  border-radius: 4px;
+}
+
+.tramo-hecho {
+  background: var(--tinta);
+}
+
+.mapa {
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px 8px;
+}
+
+.mapa-lados {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.mapa-lienzo {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 260 / 270;
+}
+
+.mapa-lienzo svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* La cuadrícula ocupa el abdomen del dibujo; las medidas son porcentajes
+   del lienzo para que crezca y encoja con él. */
+.mapa-rejilla {
+  position: absolute;
+  left: 16.92%;
+  top: 31.11%;
+  width: 66.16%;
+  height: 63.7%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  /* Evita que la página se desplace mientras se pinta con el dedo. */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Cada uno de los 9 cuadros grandes, dividido a su vez en 3 x 3 celdas. */
+.cuadro {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  background: rgba(255, 255, 255, 0.55);
+  border: var(--borde);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.celda {
+  padding: 0;
+  background: none;
+  border: 0;
+  border-right: 1px solid rgba(17, 17, 17, 0.3);
+  border-bottom: 1px solid rgba(17, 17, 17, 0.3);
+  border-radius: 0;
+}
+
+/* Sin línea en la última columna ni en la última fila de cada cuadro. */
+.celda:nth-child(3n) {
+  border-right: 0;
+}
+
+.celda:nth-child(n + 7) {
+  border-bottom: 0;
+}
+
+.celda:focus-visible {
+  outline-offset: -3px;
+}
+
+.celda-pintada {
+  background: var(--acento);
+}
+
+/* El ombligo va por encima de la cuadrícula y no intercepta los toques. */
+.mapa-ombligo {
+  position: absolute;
+  left: 50%;
+  top: 62.96%;
+  width: 10px;
+  height: 14px;
+  transform: translate(-50%, -50%);
+  background: var(--tinta);
+  border: 2px solid var(--papel);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.mapa-pie {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.boton-texto {
+  min-height: 44px;
+  padding: 0 4px;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: underline;
+  background: none;
+  border: 0;
+}
+
+.numero {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+input[type='range'] {
+  width: 100%;
+  height: 36px;
+  margin: 0;
+  accent-color: var(--acento);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  min-height: 44px;
+  padding: 8px 16px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--papel);
+  border: var(--borde);
+  border-radius: 22px;
+}
+
+.chip-activo {
+  background: var(--acento);
+  color: var(--sobre-acento);
+}
+
+.boton-siguiente {
+  margin-top: auto;
+  min-height: 56px;
+  font-size: 20px;
+  font-weight: 800;
+  background: var(--tinta);
+  color: var(--papel);
+  border: var(--borde);
+  border-radius: 18px;
+  box-shadow: 4px 4px 0 var(--tinta);
+}
+
+.boton-siguiente:disabled {
+  font-size: 16px;
+  background: var(--papel);
+  color: var(--tinta-suave);
+  border-style: dashed;
+  box-shadow: none;
+}
+
+/* --- Niveles de dolor (semana e insignias) --- */
+
+.nivel-1 {
+  background: var(--dolor-1);
+}
+
+.nivel-2 {
+  background: var(--dolor-2);
+}
+
+.nivel-3 {
+  background: var(--dolor-3);
+  color: var(--papel);
+}
+
+/* --- Lista de registros --- */
+
+.registros {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.registro {
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.registro:active {
+  transform: translate(2px, 2px);
+}
+
+.insignia {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  border: var(--borde);
+  border-radius: 50%;
+}
+
+.registro-texto {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 16px;
+}
+
+.registro-texto strong {
+  font-weight: 700;
+}
+
+/* --- Campos de texto y fecha --- */
+
+.campo {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  /* 16 px como mínimo: con menos, el iPhone amplía la pantalla al escribir. */
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--tinta);
+  background: var(--papel);
+  border: var(--borde);
+  border-radius: 12px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+textarea.campo {
+  resize: vertical;
+}
+
+.campo::placeholder {
+  color: var(--tinta-suave);
+}
+
+.etiqueta-menor {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.aviso {
+  padding: 12px 14px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--alerta);
+  background: var(--papel);
+  border: 2px solid var(--alerta);
+  border-radius: 12px;
+}
+
+/* --- Pie del asistente de registro --- */
+
+.pie-registro {
+  margin-top: auto;
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.pie-registro .boton-siguiente {
+  margin-top: 0;
+}
+
+.pie-registro .boton-texto {
+  align-self: center;
+}
+
+/* --- Historial --- */
+
+.mes::first-letter {
+  text-transform: uppercase;
+}
+
+.lista > .boton-texto {
+  align-self: center;
+}
+
+/* --- Ficha de un registro --- */
+
+.hueco-boton {
+  width: 44px;
+}
+
+.ficha {
+  margin: 0;
+  gap: 0;
+  padding: 4px 14px;
+}
+
+.ficha-fila {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.15);
+}
+
+.ficha-fila:last-child {
+  border-bottom: 0;
+}
+
+.ficha dt {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tinta-suave);
+}
+
+.ficha dd {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.fila-botones {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.boton-secundario {
+  min-height: 52px;
+  padding: 8px 12px;
+  font-size: 17px;
+  font-weight: 800;
+  background: var(--papel);
+  border: var(--borde);
+  border-radius: 16px;
+}
+
+.boton-peligro {
+  color: var(--alerta);
+  border-color: var(--alerta);
+}
+
+.confirmacion {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* En la ficha el mapa solo se mira: sin cursor de mano ni atenuado. */
+.celda:disabled {
+  cursor: default;
+}
+
+/* --- Apuntes rápidos --- */
+
+.apunte {
+  padding: 10px 14px;
+}
+
+.insignia-apunte {
+  width: 40px;
+  height: 40px;
+  background: var(--fondo);
+}
+
+.registro-texto .nota {
+  overflow-wrap: anywhere;
+}
+
+.boton-texto-peligro {
+  color: var(--alerta);
+}
