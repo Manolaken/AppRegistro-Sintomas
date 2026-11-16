@@ -112,10 +112,14 @@ export type Pantalla =
   | 'detalle'
   | 'editar'
   | 'apunte'
+  | 'informe'
   | 'ajustes'
 
 // Las pestañas de la barra inferior que ya funcionan.
-export type Pestana = 'inicio' | 'historial' | 'ajustes'
+export type Pestana = 'inicio' | 'historial' | 'informe' | 'ajustes'
+
+// Periodo que abarca el informe: los últimos 30 o 90 días, o todo.
+export type PeriodoInforme = '30' | '90' | 'todo'
 
 // Una copia de seguridad: todo lo guardado, en un archivo JSON.
 // "formato" permite cambiar la estructura en el futuro y seguir leyendo

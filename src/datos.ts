@@ -14,6 +14,7 @@ import type {
   Impacto,
   Medicamento,
   Opcion,
+  PeriodoInforme,
   Regla,
   Sintoma,
   Sueno,
@@ -312,3 +313,11 @@ export function resumenApunte(apunte: Apunte): string {
 export function momentoApunte(apunte: Apunte, soloHora: boolean): string {
   return soloHora ? textoHora(apunte.momento) : textoMomento(apunte.momento)
 }
+
+// --- Informe ---
+
+export const PERIODOS_INFORME: Opcion<PeriodoInforme>[] = [
+  { id: '30', etiqueta: 'Último mes' },
+  { id: '90', etiqueta: 'Últimos 3 meses' },
+  { id: 'todo', etiqueta: 'Todo' },
+]

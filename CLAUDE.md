@@ -20,7 +20,7 @@ El repositorio es público: no escribas aquí ni en el código nombres ni datos 
 
 - Desarrollo en Windows 11 con VS Code, Node 22.14 y npm 10.9. Terminal: PowerShell.
 - Dispositivo de pruebas: iPhone XS con iOS 18. Dispositivos finales: iPhone 11 y iPhone 13 mini con iOS 26.
-- Stack: React 19, TypeScript 7, Vite 8, linter Oxlint.
+- Stack: React 19, TypeScript 7, Vite 8, linter Oxlint. Única librería añadida: `pdf-lib`, para el informe.
 
 ### Comandos
 
@@ -53,6 +53,9 @@ src/
   useEpisodios.ts                Hook que lee los episodios guardados al entrar en una pantalla
   useApuntes.ts                  Lo mismo para los apuntes rápidos
   copia.ts                       Copia de seguridad: crear, entregar, leer y recuperar el JSON
+  compartir.ts                   Entrega un archivo por el menú Compartir o lo descarga
+  estadisticas.ts                Cálculos del informe: totales y recuentos de un periodo
+  informe.ts                     Dibuja el informe en PDF con pdf-lib
   componentes/
     Iconos.tsx                   Iconos SVG de trazo
     MapaAbdomen.tsx              Torso con 9 cuadros de 3 x 3 celdas; sin `alCambiar` es de solo lectura
@@ -64,6 +67,7 @@ src/
   pantallas/
     Inicio.tsx                   Pantalla principal: semana, apuntes de hoy y últimos dolores
     Historial.tsx                Dolores y apuntes mezclados por fecha, agrupados por mes
+    Informe.tsx                  Elegir periodo y crear el informe en PDF
     Ajustes.tsx                  Guardar y recuperar la copia de seguridad
     ApunteRapido.tsx             Crear, editar o borrar un apunte de comida, medicación o regla
     DetalleEpisodio.tsx          Ficha de un registro, con editar y borrar
@@ -111,17 +115,16 @@ Hecho:
 
 - Copia de seguridad en la pestaña Ajustes. Guardar entrega un JSON por el menú Compartir (o lo descarga donde no lo hay). Recuperar añade los registros del archivo sin borrar nada; los que tienen el mismo `id` se sustituyen. El inicio avisa si hay registros y nunca se ha hecho copia o han pasado 14 días (la fecha de la última se guarda en `localStorage`).
 
-La pestaña Informe está desactivada.
+- Informe en PDF para el médico, en la pestaña Informe: resumen, evolución, mapa de zonas, recuentos, detalle de cada episodio y diario de apuntes. Se elige el periodo (30 días, 90 días o todo) y un nombre opcional que no se guarda. `informe.ts` y pdf-lib van en un archivo aparte que se descarga al entrar en la pestaña, así que la primera vez hace falta conexión.
 
 ## Pendiente
 
 1. **Foto opcional** de la comida, en el apunte de comida y en el paso 3 del registro.
 2. **Aprovechar los apuntes en el registro de dolor:** proponer en el paso 3 las comidas ya apuntadas ese día para no escribirlas dos veces.
-3. **Informe PDF** para el médico con resumen y gráficas (previsto: jsPDF).
-4. **Bloqueo** con código y Face ID (WebAuthn).
-5. **Tipografía en local:** ahora viene de Google Fonts y sin conexión se ve con la letra del sistema.
+3. **Bloqueo** con código y Face ID (WebAuthn).
+4. **Tipografía en local:** ahora viene de Google Fonts y sin conexión se ve con la letra del sistema.
 
-Si cambia la forma de `Episodio` o de `Apunte`, hay que subir `VERSION` en `almacen.ts` y migrar los datos ya guardados; no se pueden perder registros. El informe debe incluir los dos almacenes. Si cambia la forma de la copia (`Copia` en `tipos.ts`), sube `formato` y haz que `leerCopia` siga aceptando las copias antiguas.
+Si cambia la forma de `Episodio` o de `Apunte`, hay que subir `VERSION` en `almacen.ts` y migrar los datos ya guardados; no se pueden perder registros. El informe y la copia incluyen los dos almacenes: un campo nuevo hay que añadirlo también a `estadisticas.ts` e `informe.ts`. Si cambia la forma de la copia (`Copia` en `tipos.ts`), sube `formato` y haz que `leerCopia` siga aceptando las copias antiguas.
 
 ### Datos de cada episodio
 
@@ -149,4 +152,5 @@ Si cambia la forma de `Episodio` o de `Apunte`, hay que subir `VERSION` en `alma
 - Son datos de salud: nada de analítica, servicios externos ni envío de datos a ningún servidor.
 - La app registra información para el médico; no debe diagnosticar ni dar consejos médicos.
 - No añadas dependencias sin justificarlo: cada librería aumenta lo que hay que mantener y descargar.
+- Las fuentes estándar del PDF no tienen emojis ni símbolos raros: todo texto pasa por `limpiar` en `informe.ts`, que quita lo que no existe.
 - No uses `crypto.randomUUID()` ni otras API que exijan HTTPS: en las pruebas por la red local no existen.

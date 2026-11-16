@@ -1,4 +1,5 @@
 import { importarDatos, listarApuntes, listarEpisodios } from './almacen.ts'
+import { entregarArchivo } from './compartir.ts'
 import { apunteNuevo, episodioNuevo } from './datos.ts'
 import { ahoraLocal, claveDia } from './fechas.ts'
 import type { Apunte, Copia, Episodio } from './tipos.ts'
@@ -24,45 +25,18 @@ function nombreArchivo(): string {
   return `registro-sintomas-${claveDia(new Date())}.json`
 }
 
-// Entrega el archivo a la persona. En el iPhone abre el menú Compartir,
-// desde donde se guarda en Archivos o iCloud; donde no hay menú Compartir
-// (un ordenador), lo descarga.
+// Entrega la copia como archivo (menú Compartir o descarga) y apunta la
+// fecha si ha salido bien.
 export async function entregarCopia(copia: Copia): Promise<'compartida' | 'descargada' | 'cancelada'> {
   const texto = JSON.stringify(copia, null, 2)
   const nombre = nombreArchivo()
-
-  // Algunos navegadores solo dejan compartir ciertos tipos de archivo, así
-  // que se prueba primero como JSON y después como texto normal.
-  const candidatos = [
+  // Primero como JSON y, si el navegador no deja compartirlo, como texto.
+  const resultado = await entregarArchivo([
     new File([texto], nombre, { type: 'application/json' }),
     new File([texto], nombre, { type: 'text/plain' }),
-  ]
-  if (typeof navigator.share === 'function' && typeof navigator.canShare === 'function') {
-    for (const archivo of candidatos) {
-      if (!navigator.canShare({ files: [archivo] })) continue
-      try {
-        await navigator.share({ files: [archivo] })
-        marcarCopiaHecha()
-        return 'compartida'
-      } catch (error) {
-        // Cerrar el menú sin elegir nada no es un fallo.
-        if (error instanceof DOMException && error.name === 'AbortError') return 'cancelada'
-        // Cualquier otro problema: se intenta la descarga normal.
-        break
-      }
-    }
-  }
-
-  const url = URL.createObjectURL(candidatos[0])
-  const enlace = document.createElement('a')
-  enlace.href = url
-  enlace.download = nombre
-  document.body.appendChild(enlace)
-  enlace.click()
-  enlace.remove()
-  setTimeout(() => URL.revokeObjectURL(url), 10000)
-  marcarCopiaHecha()
-  return 'descargada'
+  ])
+  if (resultado !== 'cancelada') marcarCopiaHecha()
+  return resultado
 }
 
 // --- Leer una copia ---

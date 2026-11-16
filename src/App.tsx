@@ -3,6 +3,7 @@ import Ajustes from './pantallas/Ajustes.tsx'
 import ApunteRapido from './pantallas/ApunteRapido.tsx'
 import DetalleEpisodio from './pantallas/DetalleEpisodio.tsx'
 import Historial from './pantallas/Historial.tsx'
+import Informe from './pantallas/Informe.tsx'
 import Inicio from './pantallas/Inicio.tsx'
 import RegistrarDolor from './pantallas/RegistrarDolor.tsx'
 import type { Apunte, ClaseApunte, Episodio, Pantalla, Pestana } from './tipos.ts'
@@ -80,6 +81,10 @@ function App() {
         }}
       />
     )
+  }
+
+  if (pantalla === 'informe') {
+    return <Informe alIr={ir} />
   }
 
   if (pantalla === 'ajustes') {

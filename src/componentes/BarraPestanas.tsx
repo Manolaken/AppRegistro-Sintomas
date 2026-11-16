@@ -6,8 +6,7 @@ type Props = {
   alIr: (pestana: Pestana) => void
 }
 
-// Barra inferior con las secciones de la app. Informe todavía no existe y
-// por eso está desactivada.
+// Barra inferior con las secciones de la app.
 export default function BarraPestanas({ activa, alIr }: Props) {
   return (
     <nav className="pestanas" aria-label="Secciones">
@@ -29,7 +28,12 @@ export default function BarraPestanas({ activa, alIr }: Props) {
         <IconoHistorial />
         Historial
       </button>
-      <button type="button" className="pestana" disabled>
+      <button
+        type="button"
+        className={activa === 'informe' ? 'pestana pestana-activa' : 'pestana'}
+        aria-current={activa === 'informe' ? 'page' : undefined}
+        onClick={() => alIr('informe')}
+      >
         <IconoInforme />
         Informe
       </button>
