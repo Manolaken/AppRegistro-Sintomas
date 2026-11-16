@@ -20,7 +20,7 @@ El repositorio es público: no escribas aquí ni en el código nombres ni datos 
 
 - Desarrollo en Windows 11 con VS Code, Node 22.14 y npm 10.9. Terminal: PowerShell.
 - Dispositivo de pruebas: iPhone XS con iOS 18. Dispositivos finales: iPhone 11 y iPhone 13 mini con iOS 26.
-- Stack: React 19, TypeScript 7, Vite 8, linter Oxlint. Única librería añadida: `pdf-lib`, para el informe.
+- Stack: React 19, TypeScript 7, Vite 8, linter Oxlint. Paquetes añadidos: `pdf-lib`, para el informe, y `@fontsource-variable/bricolage-grotesque`, que trae la tipografía.
 
 ### Comandos
 
@@ -101,7 +101,7 @@ src/
 
 - Fondo amarillo `#FFD84D`, tarjetas blancas con borde negro de 2 px, botones principales con sombra dura desplazada 4 px.
 - Acento azul `#2F5BFF` con texto blanco. Texto principal `#111111`, secundario `#444444`.
-- Tipografía Bricolage Grotesque (ahora desde Google Fonts; hay que alojarla en local para que funcione sin conexión).
+- Tipografía Bricolage Grotesque, incluida en la app con el paquete de Fontsource (se importa en `main.tsx`; en CSS se llama `'Bricolage Grotesque Variable'`). No se carga nada de Google.
 - Diseñada para móvil: ancho máximo 430 px, zonas táctiles de 44 px como mínimo, márgenes con `env(safe-area-inset-*)`.
 - Accesibilidad: botones e inputs reales, `aria-label` en los botones sin texto, `aria-pressed` en los seleccionables, contraste mínimo 4,5:1.
 - Tono de los textos: cercano y breve, de tú. Registrar un episodio debe llevar menos de un minuto.
@@ -117,18 +117,17 @@ Hecho:
 - Apuntes rápidos desde el inicio, sin que haya dolor: comida (todas las del día, voluntario), medicación y regla. Los de hoy se ven en el inicio y todos en el historial; al tocar uno se edita o se borra.
 - Guardado local en IndexedDB, escrito a mano en `almacen.ts` sin librerías. Base `registro-sintomas`, versión 2, con dos almacenes de clave `id`: `episodios` y `apuntes`.
 
-- App instalable y con funcionamiento sin conexión: manifiesto, iconos y service worker propio, sin librerías. El service worker solo se registra en la versión publicada, no con `npm run dev`.
+- App instalable y con funcionamiento sin conexión: manifiesto, iconos y service worker propio, sin librerías. El service worker solo se registra en la versión publicada, no con `npm run dev`. Al instalarse guarda la página y todo lo que esta carga, siguiendo también lo que cargan el código (el trozo del informe) y los estilos (la tipografía), así que la app completa funciona sin conexión desde la primera visita.
 
 - Copia de seguridad en la pestaña Ajustes. Guardar entrega un JSON por el menú Compartir (o lo descarga donde no lo hay). Recuperar añade los registros del archivo sin borrar nada; los que tienen el mismo `id` se sustituyen. El inicio avisa si hay registros y nunca se ha hecho copia o han pasado 14 días (la fecha de la última se guarda en `localStorage`).
 
-- Informe en PDF para el médico, en la pestaña Informe: resumen, evolución, mapa de zonas, recuentos, detalle de cada episodio y diario de apuntes. Se elige el periodo (30 días, 90 días o todo) y un nombre opcional que no se guarda. `informe.ts` y pdf-lib van en un archivo aparte que se descarga al entrar en la pestaña, así que la primera vez hace falta conexión.
+- Informe en PDF para el médico, en la pestaña Informe: resumen, evolución, mapa de zonas, recuentos, detalle de cada episodio y diario de apuntes. Se elige el periodo (30 días, 90 días o todo) y un nombre opcional que no se guarda. `informe.ts` y pdf-lib van en un archivo aparte que solo se carga al entrar en la pestaña.
 - Bloqueo opcional con código de 4 números y, donde el dispositivo lo permite, Face ID o huella (WebAuthn, solo con HTTPS). La app arranca bloqueada y vuelve a bloquearse tras 60 segundos en segundo plano; cinco fallos seguidos obligan a esperar 30 segundos. Mientras está bloqueada, la app sigue montada pero oculta, para no perder un registro a medias. Es una cortina de privacidad: los datos no se cifran y no hay forma de recuperar un código olvidado salvo entrar con Face ID.
 
 ## Pendiente
 
 1. **Foto opcional** de la comida, en el apunte de comida y en el paso 3 del registro.
 2. **Aprovechar los apuntes en el registro de dolor:** proponer en el paso 3 las comidas ya apuntadas ese día para no escribirlas dos veces.
-3. **Tipografía en local:** ahora viene de Google Fonts y sin conexión se ve con la letra del sistema.
 
 Si cambia la forma de `Episodio` o de `Apunte`, hay que subir `VERSION` en `almacen.ts` y migrar los datos ya guardados; no se pueden perder registros. El informe y la copia incluyen los dos almacenes: un campo nuevo hay que añadirlo también a `estadisticas.ts` e `informe.ts`. Si cambia la forma de la copia (`Copia` en `tipos.ts`), sube `formato` y haz que `leerCopia` siga aceptando las copias antiguas.
 
@@ -155,7 +154,7 @@ Si cambia la forma de `Episodio` o de `Apunte`, hay que subir `VERSION` en `alma
 
 ## Cuidado con
 
-- Son datos de salud: nada de analítica, servicios externos ni envío de datos a ningún servidor.
+- Son datos de salud: nada de analítica, servicios externos ni envío de datos a ningún servidor. La app no hace ninguna petición a terceros.
 - La app registra información para el médico; no debe diagnosticar ni dar consejos médicos.
 - No añadas dependencias sin justificarlo: cada librería aumenta lo que hay que mantener y descargar.
 - Las fuentes estándar del PDF no tienen emojis ni símbolos raros: todo texto pasa por `limpiar` en `informe.ts`, que quita lo que no existe.

@@ -1,5 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+// La tipografía va dentro de la app (paquete de Fontsource) en vez de
+// descargarse de Google: así se ve igual sin conexión.
+import '@fontsource-variable/bricolage-grotesque/wght.css'
 import './index.css'
 import App from './App.tsx'
 

@@ -16,7 +16,7 @@
   --alerta: #b3261e;
   --borde: 2px solid var(--tinta);
 
-  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+  font-family: 'Bricolage Grotesque Variable', system-ui, sans-serif;
   color: var(--tinta);
   background: var(--fondo);
   -webkit-text-size-adjust: 100%;

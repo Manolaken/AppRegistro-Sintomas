@@ -23,14 +23,51 @@ async function precargar() {
   const html = await respuesta.clone().text()
   await cache.put('./', respuesta)
 
-  // Busca en la página todo lo que se carga con src="..." o href="..." y se
-  // queda con lo que pertenece a la propia app.
   const ambito = self.registration.scope
-  const enlaces = [...html.matchAll(/(?:src|href)="([^"]+)"/g)]
-    .map((coincidencia) => new URL(coincidencia[1], ambito).href)
-    .filter((url) => url.startsWith(ambito) && url !== ambito)
-  // Si alguno falla no pasa nada: se guardará la primera vez que se use.
-  await Promise.allSettled([...new Set(enlaces)].map((url) => cache.add(url)))
+  const vistos = new Set([ambito])
+  // Archivos pendientes de guardar. Se empieza por los que enlaza la página
+  // con src="..." o href="...".
+  let pendientes = [...html.matchAll(/(?:src|href)="([^"]+)"/g)].map(
+    (coincidencia) => new URL(coincidencia[1], ambito).href,
+  )
+
+  // Se guarda cada archivo y se mira qué otros archivos carga él a su vez:
+  // el código carga otros trozos de código (por ejemplo el del informe) y
+  // los estilos cargan la tipografía. Así queda todo listo sin conexión.
+  // El límite de vueltas es solo una protección contra bucles.
+  for (let vuelta = 0; vuelta < 6 && pendientes.length > 0; vuelta += 1) {
+    const tanda = [...new Set(pendientes)].filter(
+      (url) => url.startsWith(ambito) && !vistos.has(url),
+    )
+    tanda.forEach((url) => vistos.add(url))
+    // Si alguno falla no pasa nada: se guardará la primera vez que se use.
+    await Promise.allSettled(tanda.map((url) => cache.add(url)))
+
+    pendientes = []
+    for (const url of tanda) {
+      const ruta = new URL(url).pathname
+      if (!ruta.endsWith('.js') && !ruta.endsWith('.css')) continue
+      const guardado = await cache.match(url)
+      if (!guardado) continue
+      const texto = await guardado.text()
+      const rutas = ruta.endsWith('.css')
+        ? // En los estilos: url(...)
+          [...texto.matchAll(/url\(\s*['"]?([^'")]+)['"]?\s*\)/g)].map((c) => c[1])
+        : // En el código: textos entre comillas que parecen rutas de archivo.
+          [...texto.matchAll(/["'`]((?:\.{1,2}\/|\/|assets\/)[\w@.\/-]+\.(?:js|css|woff2))["'`]/g)].map(
+            (c) => c[1],
+          )
+      for (const encontrada of rutas) {
+        if (encontrada.startsWith('data:')) continue
+        // Según quién la escriba, la ruta es relativa al propio archivo o a
+        // la carpeta de la app: se prueban las dos.
+        pendientes.push(new URL(encontrada, url).href)
+        if (!encontrada.startsWith('.') && !encontrada.startsWith('/')) {
+          pendientes.push(new URL(encontrada, ambito).href)
+        }
+      }
+    }
+  }
 }
 
 // Al activarse: borra copias de versiones anteriores de este archivo y
