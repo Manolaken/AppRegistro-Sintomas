@@ -1,114 +1,39 @@
-import { useState } from 'react'
-import Ajustes from './pantallas/Ajustes.tsx'
-import ApunteRapido from './pantallas/ApunteRapido.tsx'
-import DetalleEpisodio from './pantallas/DetalleEpisodio.tsx'
-import Historial from './pantallas/Historial.tsx'
-import Informe from './pantallas/Informe.tsx'
-import Inicio from './pantallas/Inicio.tsx'
-import RegistrarDolor from './pantallas/RegistrarDolor.tsx'
-import type { Apunte, ClaseApunte, Episodio, Pantalla, Pestana } from './tipos.ts'
+import { useEffect, useState } from 'react'
+import { SEGUNDOS_EN_SEGUNDO_PLANO, hayCodigo } from './bloqueo.ts'
+import Navegacion from './Navegacion.tsx'
+import Bloqueo from './pantallas/Bloqueo.tsx'
 
-// Navegación sencilla: una variable de estado decide qué pantalla se ve.
+// Raíz de la app. Decide si se ve la pantalla de bloqueo o la app normal.
 function App() {
-  const [pantalla, setPantalla] = useState<Pantalla>('inicio')
-  // El registro de dolor que se está viendo o editando.
-  const [seleccionado, setSeleccionado] = useState<Episodio | null>(null)
-  // El apunte rápido en curso: su clase y, si se edita uno, el apunte.
-  const [apunte, setApunte] = useState<{ clase: ClaseApunte; inicial?: Apunte } | null>(null)
-  // Desde qué pestaña se abrió, para volver al mismo sitio.
-  const [origen, setOrigen] = useState<Pestana>('inicio')
+  // Si hay código puesto, la app arranca bloqueada.
+  const [bloqueada, setBloqueada] = useState(hayCodigo)
 
-  function ir(nuevaPantalla: Pantalla) {
-    setPantalla(nuevaPantalla)
-    window.scrollTo(0, 0)
-  }
+  // Vuelve a bloquear si la app ha estado un rato en segundo plano.
+  useEffect(() => {
+    let ocultaDesde = 0
+    function alCambiarVisibilidad() {
+      if (document.visibilityState === 'hidden') {
+        ocultaDesde = Date.now()
+        return
+      }
+      const segundos = (Date.now() - ocultaDesde) / 1000
+      if (ocultaDesde !== 0 && hayCodigo() && segundos > SEGUNDOS_EN_SEGUNDO_PLANO) {
+        setBloqueada(true)
+      }
+    }
+    document.addEventListener('visibilitychange', alCambiarVisibilidad)
+    return () => document.removeEventListener('visibilitychange', alCambiarVisibilidad)
+  }, [])
 
-  function abrir(episodio: Episodio, desde: Pestana) {
-    setSeleccionado(episodio)
-    setOrigen(desde)
-    ir('detalle')
-  }
-
-  function abrirApunte(inicial: Apunte, desde: Pestana) {
-    setApunte({ clase: inicial.clase, inicial })
-    setOrigen(desde)
-    ir('apunte')
-  }
-
-  function apuntar(clase: ClaseApunte) {
-    setApunte({ clase })
-    setOrigen('inicio')
-    ir('apunte')
-  }
-
-  if (pantalla === 'registrar') {
-    return <RegistrarDolor alSalir={() => ir('inicio')} alGuardar={() => ir('inicio')} />
-  }
-
-  if (pantalla === 'apunte' && apunte !== null) {
-    return (
-      <ApunteRapido
-        clase={apunte.clase}
-        apunteInicial={apunte.inicial}
-        alSalir={() => ir(origen)}
-        alTerminar={() => ir(origen)}
-      />
-    )
-  }
-
-  if (pantalla === 'editar' && seleccionado !== null) {
-    return (
-      <RegistrarDolor
-        episodioInicial={seleccionado}
-        alSalir={() => ir('detalle')}
-        alGuardar={(guardado) => {
-          setSeleccionado(guardado)
-          ir('detalle')
-        }}
-      />
-    )
-  }
-
-  if (pantalla === 'detalle' && seleccionado !== null) {
-    return (
-      <DetalleEpisodio
-        episodio={seleccionado}
-        alVolver={() => ir(origen)}
-        alEditar={() => ir('editar')}
-        alBorrar={() => {
-          setSeleccionado(null)
-          ir(origen)
-        }}
-      />
-    )
-  }
-
-  if (pantalla === 'informe') {
-    return <Informe alIr={ir} />
-  }
-
-  if (pantalla === 'ajustes') {
-    return <Ajustes alIr={ir} />
-  }
-
-  if (pantalla === 'historial') {
-    return (
-      <Historial
-        alAbrir={(episodio) => abrir(episodio, 'historial')}
-        alAbrirApunte={(inicial) => abrirApunte(inicial, 'historial')}
-        alIr={ir}
-      />
-    )
-  }
-
+  // La app sigue montada debajo (oculta) para no perder lo que se estuviera
+  // rellenando cuando salta el bloqueo.
   return (
-    <Inicio
-      alRegistrar={() => ir('registrar')}
-      alAbrir={(episodio) => abrir(episodio, 'inicio')}
-      alApuntar={apuntar}
-      alAbrirApunte={(inicial) => abrirApunte(inicial, 'inicio')}
-      alIr={ir}
-    />
+    <>
+      {bloqueada && <Bloqueo alDesbloquear={() => setBloqueada(false)} />}
+      <div hidden={bloqueada}>
+        <Navegacion />
+      </div>
+    </>
   )
 }
 

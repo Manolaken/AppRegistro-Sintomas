@@ -1,9 +1,11 @@
 import { useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import BarraPestanas from '../componentes/BarraPestanas.tsx'
+import SeccionBloqueo from '../componentes/SeccionBloqueo.tsx'
 import { crearCopia, entregarCopia, leerCopia, recuperarCopia, textoUltimaCopia } from '../copia.ts'
 import { textoFechaLarga } from '../fechas.ts'
 import type { Copia, Pestana } from '../tipos.ts'
+import ConfigurarCodigo from './ConfigurarCodigo.tsx'
 
 type Props = {
   alIr: (pestana: Pestana) => void
@@ -16,7 +18,7 @@ function resumen(copia: Copia): string {
   return `${dolores} y ${apuntes}`
 }
 
-// Ajustes. De momento solo tiene la copia de seguridad.
+// Ajustes: copia de seguridad y bloqueo.
 export default function Ajustes({ alIr }: Props) {
   // Mensajes de la parte de guardar.
   const [ocupado, setOcupado] = useState(false)
@@ -29,6 +31,9 @@ export default function Ajustes({ alIr }: Props) {
   const [pendiente, setPendiente] = useState<Copia | null>(null)
   const [recuperado, setRecuperado] = useState('')
   const [errorRecuperar, setErrorRecuperar] = useState('')
+
+  // Si se está poniendo o cambiando el código de bloqueo.
+  const [configurando, setConfigurando] = useState(false)
 
   async function guardarCopia() {
     setOcupado(true)
@@ -77,6 +82,15 @@ export default function Ajustes({ alIr }: Props) {
       setErrorRecuperar('No se ha podido recuperar la copia. No se ha cambiado nada.')
     }
     setOcupado(false)
+  }
+
+  if (configurando) {
+    return (
+      <ConfigurarCodigo
+        alTerminar={() => setConfigurando(false)}
+        alCancelar={() => setConfigurando(false)}
+      />
+    )
   }
 
   return (
@@ -178,6 +192,8 @@ export default function Ajustes({ alIr }: Props) {
             </p>
           )}
         </section>
+
+        <SeccionBloqueo alConfigurar={() => setConfigurando(true)} />
       </main>
 
       <BarraPestanas activa="ajustes" alIr={alIr} />

@@ -760,3 +760,97 @@ textarea.campo {
 .recordatorio .boton-texto {
   flex-shrink: 0;
 }
+
+/* --- Bloqueo con código --- */
+
+.bloqueo {
+  align-items: center;
+  text-align: center;
+}
+
+.bloqueo .barra-superior {
+  align-self: stretch;
+}
+
+.bloqueo-icono {
+  width: 56px;
+  height: 56px;
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--papel);
+  border: var(--borde);
+  border-radius: 50%;
+  box-shadow: 3px 3px 0 var(--tinta);
+}
+
+.teclado {
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  margin: 8px 0;
+}
+
+.puntos {
+  display: flex;
+  gap: 16px;
+}
+
+.punto {
+  width: 18px;
+  height: 18px;
+  background: var(--papel);
+  border: var(--borde);
+  border-radius: 50%;
+}
+
+.punto-lleno {
+  background: var(--tinta);
+}
+
+.teclas {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tecla {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 800;
+  background: var(--papel);
+  border: var(--borde);
+  border-radius: 18px;
+  box-shadow: 3px 3px 0 var(--tinta);
+  /* Evita el zoom por doble toque al teclear deprisa. */
+  touch-action: manipulation;
+}
+
+.tecla:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--tinta);
+}
+
+.tecla:disabled {
+  color: var(--tinta-suave);
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.tecla-borrar {
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.tecla-borrar:disabled {
+  border: 0;
+}

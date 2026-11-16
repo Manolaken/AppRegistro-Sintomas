@@ -88,3 +88,16 @@ export const IconoAjustes = () => (
     <circle cx="9" cy="17" r="2" />
   </Icono>
 )
+
+export const IconoBorrar = () => (
+  <Icono>
+    <path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7zM12 9.500l5 5M17 9.500l-5 5" />
+  </Icono>
+)
+
+export const IconoCandado = () => (
+  <Icono>
+    <rect x="5" y="11" width="14" height="10" rx="2" />
+    <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+  </Icono>
+)
