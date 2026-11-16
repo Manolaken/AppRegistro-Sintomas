@@ -11,6 +11,7 @@ El repositorio es público: no escribas aquí ni en el código nombres ni datos 
 - **Publicación:** GitHub Pages, en https://manolaken.github.io/AppRegistro-Sintomas/. Cada subida a `main` la compila y publica sola (`.github/workflows/publicar.yml`).
 - **Datos:** solo en el dispositivo. Nada sale del teléfono. Solo la usuaria ve sus registros.
 - **Idioma:** español, tanto la interfaz como los nombres de variables, componentes y comentarios.
+- **Licencia:** ninguna, a propósito. El código es público pero con todos los derechos reservados, para no cerrar la puerta a comercializarla. No añadas un archivo de licencia.
 - **Uso:** personal, sin publicar en tiendas de apps. Si en el futuro se comercializa, la vía prevista es empaquetar con Capacitor.
 - **Estilo visual:** "Pop" (ver más abajo). Los colores pueden cambiar; están centralizados en variables CSS.
 - **Mapa del dolor:** torso sin detalles anatómicos, solo el contorno y el ombligo, con 9 cuadros grandes (las regiones médicas) divididos cada uno en 3 x 3 celdas, 81 en total, que se pintan deslizando el dedo.
@@ -35,6 +36,8 @@ En PowerShell, `npm run x -- --flag` pierde los parámetros. Usa `npx` directame
 ## Estructura
 
 ```
+README.md                        Qué es, cómo instalarla y cómo ejecutar el código
+GUIA.md                          Guía de uso para quien registra sus síntomas
 index.html                       Página base (idioma, fuente, viewport, iconos y manifiesto)
 vite.config.ts                   Configuración de Vite; `base` cambia al compilar para GitHub Pages
 .github/workflows/publicar.yml   Compila y publica en GitHub Pages al subir a main
@@ -156,6 +159,7 @@ Si cambia la forma de `Episodio` o de `Apunte`, hay que subir `VERSION` en `alma
 
 - Son datos de salud: nada de analítica, servicios externos ni envío de datos a ningún servidor. La app no hace ninguna petición a terceros.
 - La app registra información para el médico; no debe diagnosticar ni dar consejos médicos.
+- Si cambia algo que se ve o se usa (una pantalla, un texto, un paso), actualiza `GUIA.md`; si cambia cómo se instala o se ejecuta, actualiza `README.md`.
 - No añadas dependencias sin justificarlo: cada librería aumenta lo que hay que mantener y descargar.
 - Las fuentes estándar del PDF no tienen emojis ni símbolos raros: todo texto pasa por `limpiar` en `informe.ts`, que quita lo que no existe.
 - No uses `crypto.randomUUID()` ni otras API que exijan HTTPS: en las pruebas por la red local no existen.
